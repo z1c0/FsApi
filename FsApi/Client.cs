@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
-using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
-using Windows.Web.Http;
-using Windows.Web.Http.Filters;
 
 namespace FsApi
 {
@@ -17,14 +13,13 @@ namespace FsApi
     private int _pin;
     private int _sessionId;
 
-    public Client(int pin)
+    public Client(Uri baseUri, int pin)
     {
       _pin = pin;
-      var filter = new HttpBaseProtocolFilter();
-      filter.CacheControl.ReadBehavior = HttpCacheReadBehavior.MostRecent;
-      filter.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
-      _httpClient = new HttpClient(filter);
+      _httpClient = new HttpClient();
+      _httpClient.BaseAddress = baseUri;
       _httpClient.DefaultRequestHeaders.Clear();
+      _httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue() { NoCache = true };
     }
 
     public void Dispose()
@@ -34,60 +29,63 @@ namespace FsApi
 
     public async Task<FsResult<int>> CreateSession()
     {
-      var result = new FsResult<int>();
-      try
-      {
-        string uri = GetBaseUri();
-        uri += "CREATE_SESSION?pin=" + _pin;
-        var response = await _httpClient.GetAsync(new Uri(uri));
-        await ReadResponse(response);
-        result.Value = _sessionId;
-      }
-      catch (Exception e)
-      {
-        result.Error = e;
-      }
-      return result;
-    }
-
-    private static string GetBaseUri()
-    {
       // TODO
-      return "http://" + "192.168.1.144" + ":" + "80" + "/fsapi/";
+      var uri = "CREATE_SESSION?pin=" + _pin;
+      var s = await _httpClient.GetStringAsync(uri);
+      var xdoc = XDocument.Parse(s);
+      var session = xdoc.Descendants("sessionId").First().Value;
+      _sessionId = Convert.ToInt32(session);
+      return new FsResult<int>() { Value = _sessionId };
     }
 
     public async Task<FsResult> SetVolume(int volume)
     {
-      var result = new FsResult<int>();
+      var remote = "netRemote.sys.audio.volume"; // TODO
+      var uri = "SET/" + remote + "?pin=" + _pin + "&sid=" + _sessionId + "&value=" + volume;
+      return await GetResponse(remote, uri);
+    }
+
+    private async Task<FsResult> GetResponse(string command, string uri)
+    {
+      return await GetResponse<bool>(command, uri);
+    }
+
+    private async Task<FsResult<T>> GetResponse<T>(string command, string uri)
+    {
+      FsResult<T> result;
       try
       {
-        var uri = GetBaseUri();
-        var remote = "netRemote.sys.audio.volume"; // TODO
-        uri += "SET/" + remote + "?pin=" + _pin + "&sid=" + _sessionId + "&value=" + volume;
-        var response = await _httpClient.GetAsync(new Uri(uri));
+        var response = await _httpClient.GetAsync(uri);
+        var r = await ResponseParser.Parse(command, response);
+        result = (FsResult<T>)r;
       }
       catch (Exception e)
       {
-        result.Error = e;
+        result = new FsResult<T> { Error = e };
       }
       return result;
     }
 
+    private string GetUrl(string command)
+    {
+      // TODO: "verb"
+      return "GET/" + command + "?pin=" + _pin + "&sid=" + _sessionId;
+    }
+
+    public async Task<FsResult<bool>> GetPowerStatus()
+    {
+      return await GetResponse<bool>(Commands.POWER, GetUrl(Commands.POWER));
+    }
+    public async Task<FsResult<string>> GetPlayInfoText()
+    {
+      return await GetResponse<string>(Commands.PLAY_INFO_TEXT, GetUrl(Commands.PLAY_INFO_TEXT));
+    }
+
     public async Task<FsResult> Power(bool on)
     {
-      var result = new FsResult<int>();
-      try
-      {
-        var uri = GetBaseUri();
-        var remote = "netRemote.sys.power"; // TODO
-        uri += "SET/" + remote + "?pin=" + _pin + "&sid=" + _sessionId + "&value=" + (on ? 1 : 0);
-        var response = await _httpClient.GetAsync(new Uri(uri));
-      }
-      catch (Exception e)
-      {
-        result.Error = e;
-      }
-      return result;
+      var remote = "netRemote.sys.power"; // TODO
+      var uri = "SET/" + remote + "?pin=" + _pin + "&sid=" + _sessionId + "&value=" + (on ? 1 : 0);
+      return await GetResponse(remote, uri);
     }
 
     public async Task<FsResult> GetNotification()
@@ -95,32 +93,15 @@ namespace FsApi
       var result = new FsResult();
       try
       {
-        var uri = GetBaseUri();
-        uri += "GET_NOTIFIES?pin=" + _pin + "&sid=" + _sessionId;
-        var response = await _httpClient.GetAsync(new Uri(uri));
-        await ParseResponse(response);
+        var uri = "GET_NOTIFIES?pin=" + _pin + "&sid=" + _sessionId;
+        var response = await _httpClient.GetAsync(uri); // TODO
+        //await ResponseParser.Parse(response);
       }
       catch (Exception e)
       {
         result.Error = e;
       }
       return result;
-    }
-
-    private async Task ParseResponse(HttpResponseMessage response)
-    {
-      var s = await response.Content.ReadAsStringAsync();
-      var xdoc = XDocument.Parse(s);
-      xdoc.ToString();
-      // TODO: FS_TIMEOUT
-    }
-
-    private async Task ReadResponse(HttpResponseMessage response)
-    {
-      var s = await response.Content.ReadAsStringAsync();
-      var xdoc = XDocument.Parse(s);
-      var session = xdoc.Descendants("sessionId").First().Value;
-      _sessionId =  Convert.ToInt32(session);
     }
   }
 }
