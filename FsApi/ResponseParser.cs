@@ -10,33 +10,44 @@ namespace FsApi
 {
   internal static class ResponseParser
   {
-    internal static async Task<FsResult> Parse(string command, HttpResponseMessage response)
+    internal static async Task<FsResult> Parse(Verb verb, string command, HttpResponseMessage response)
     {
       response.EnsureSuccessStatusCode();
       var s = await response.Content.ReadAsStringAsync();
       var xdoc = XDocument.Parse(s);
       // TODO: FS_TIMEOUT
-
-      var value = xdoc.Descendants("value").Single();
-      switch (command)
+      if (verb == Verb.Get)
       {
-        case Commands.POWER:
-          return ParseBool(value);
+        var value = xdoc.Descendants("value").Single();
+        switch (command)
+        {
+          case Command.POWER:
+            return ParseBool(value);
 
-        case Commands.PLAY_INFO_NAME:
-        case Commands.PLAY_INFO_TEXT:
-          return ParseString(value);
+          case Command.VOLUME:
+          case Command.VOLUME_STEPS:
+            return ParseByte(value);
+
+          case Command.PLAY_INFO_NAME:
+          case Command.PLAY_INFO_TEXT:
+          case Command.PLAY_INFO_GRAPHIC:
+            return ParseString(value);
+        }
+        throw new NotImplementedException(command);
       }
-      throw new NotImplementedException(command);
+      return new FsResult<bool>();
+    }
+
+    private static FsResult<byte> ParseByte(XElement value)
+    {
+      var v = byte.Parse(value.Descendants("u8").Single().Value);
+      return new FsResult<byte>() { Value = v };
     }
 
     private static FsResult<bool> ParseBool(XElement value)
     {
       var v = value.Descendants("u8").Single().Value;
-      return new FsResult<bool>()
-      {
-        Value = v != "0"
-      };
+      return new FsResult<bool>() { Value = v != "0" };
     }
 
     private static FsResult<string> ParseString(XElement value)

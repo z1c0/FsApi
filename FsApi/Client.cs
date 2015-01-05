@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -40,23 +43,49 @@ namespace FsApi
 
     public async Task<FsResult> SetVolume(int volume)
     {
-      var remote = "netRemote.sys.audio.volume"; // TODO
-      var uri = "SET/" + remote + "?pin=" + _pin + "&sid=" + _sessionId + "&value=" + volume;
-      return await GetResponse(remote, uri);
+      var args = CreateArgs("value", volume.ToString());
+      return await GetResponse(Command.VOLUME, args, Verb.Set);
     }
 
-    private async Task<FsResult> GetResponse(string command, string uri)
+    public async Task<FsResult<byte>> GetVolume()
     {
-      return await GetResponse<bool>(command, uri);
+      return await GetResponse<byte>(Command.VOLUME);
     }
 
-    private async Task<FsResult<T>> GetResponse<T>(string command, string uri)
+    public async Task<FsResult<byte>> GetVolumeSteps()
+    {
+      return await GetResponse<byte>(Command.VOLUME_STEPS);
+    }
+
+    private Dictionary<string, string> CreateArgs(params string[] args)
+    {
+      var d = new Dictionary<string, string>();
+      d["pin"] = _pin.ToString();
+      d["session"] = _sessionId.ToString();
+      for (var i = 0; i < args.Length; i += 2)
+      {
+        d[args[i]] = args[i + 1];
+      }
+      return d;
+    }
+
+    private async Task<FsResult> GetResponse(string command, Dictionary<string, string> args = null, Verb verb = Verb.Get)
+    {
+      return await GetResponse<bool>(command, args, verb);
+    }
+
+    private async Task<FsResult<T>> GetResponse<T>(string command, Dictionary<string, string> args = null, Verb verb = Verb.Get)
     {
       FsResult<T> result;
       try
       {
+        if (args == null)
+        {
+          args = CreateArgs();
+        }
+        var uri = BuildUrl(verb, command, args);
         var response = await _httpClient.GetAsync(uri);
-        var r = await ResponseParser.Parse(command, response);
+        var r = await ResponseParser.Parse(verb, command, response);
         result = (FsResult<T>)r;
       }
       catch (Exception e)
@@ -66,26 +95,60 @@ namespace FsApi
       return result;
     }
 
-    private string GetUrl(string command)
+    private string BuildUrl(Verb verb, string command, Dictionary<string, string> args)
     {
-      // TODO: "verb"
-      return "GET/" + command + "?pin=" + _pin + "&sid=" + _sessionId;
+      var sb = new StringBuilder();
+      switch (verb)
+      {
+        case Verb.Get:
+          sb.Append("GET");
+          break;
+
+        case Verb.Set:
+          sb.Append("SET");
+          break;
+
+        default:
+          throw new InvalidOperationException("verb");
+      }
+      sb.Append('/');
+      sb.Append(command);
+      var delim = '?';
+      foreach (var e in args)
+      {
+        sb.Append(delim);
+        sb.Append(e.Key);
+        sb.Append('=');
+        sb.Append(WebUtility.UrlEncode(e.Value));
+        delim = '&';
+      }
+      return sb.ToString();
     }
 
     public async Task<FsResult<bool>> GetPowerStatus()
     {
-      return await GetResponse<bool>(Commands.POWER, GetUrl(Commands.POWER));
+      return await GetResponse<bool>(Command.POWER);
     }
+
+    public async Task<FsResult<string>> GetPlayInfoName()
+    {
+      return await GetResponse<string>(Command.PLAY_INFO_NAME);
+    }
+
+    public async Task<FsResult<string>> GetPlayInfoGraphicUri()
+    {
+      return await GetResponse<string>(Command.PLAY_INFO_GRAPHIC);
+    }
+
     public async Task<FsResult<string>> GetPlayInfoText()
     {
-      return await GetResponse<string>(Commands.PLAY_INFO_TEXT, GetUrl(Commands.PLAY_INFO_TEXT));
+      return await GetResponse<string>(Command.PLAY_INFO_TEXT);
     }
 
     public async Task<FsResult> Power(bool on)
     {
-      var remote = "netRemote.sys.power"; // TODO
-      var uri = "SET/" + remote + "?pin=" + _pin + "&sid=" + _sessionId + "&value=" + (on ? 1 : 0);
-      return await GetResponse(remote, uri);
+      var args = CreateArgs("value", (on ? 1 : 0).ToString());
+      return await GetResponse(Command.POWER, args, Verb.Set);
     }
 
     public async Task<FsResult> GetNotification()

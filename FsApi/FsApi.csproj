@@ -35,7 +35,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
-    <Compile Include="Commands.cs" />
+    <Compile Include="Verb.cs" />
+    <Compile Include="Command.cs" />
     <Compile Include="DeviceInformation.cs" />
     <Compile Include="FsResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

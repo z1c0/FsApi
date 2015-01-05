@@ -6,7 +6,12 @@ namespace FsApi
   {
     public Exception Error { get; internal set; }
 
-    public bool Succeeded { get { return Error != null; } }
+    public bool Succeeded { get { return Error == null; } }
+
+    public override string ToString()
+    {
+      return "Succeeded: " + Succeeded;
+    }
   }
 
   public class FsResult<T> : FsResult
@@ -15,7 +20,7 @@ namespace FsApi
 
     public override string ToString()
     {
-      return Value.ToString();
+      return base.ToString() + " - " + Value.ToString();
     }
   }
 }
