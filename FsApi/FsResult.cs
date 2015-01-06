@@ -16,11 +16,16 @@ namespace FsApi
 
   public class FsResult<T> : FsResult
   {
-    public T Value { get; set; }
+    internal FsResult(T value = default(T))
+    {
+      Value = value;
+    }
+
+    public T Value { get; private set; }
 
     public override string ToString()
     {
-      return base.ToString() + " - " + Value.ToString();
+      return base.ToString() + "; Value:" + Value.ToString();
     }
   }
 }

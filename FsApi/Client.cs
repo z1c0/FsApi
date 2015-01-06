@@ -38,7 +38,7 @@ namespace FsApi
       var xdoc = XDocument.Parse(s);
       var session = xdoc.Descendants("sessionId").First().Value;
       _sessionId = Convert.ToInt32(session);
-      return new FsResult<int>() { Value = _sessionId };
+      return new FsResult<int>(_sessionId);
     }
 
     public async Task<FsResult> SetVolume(int volume)
@@ -85,7 +85,9 @@ namespace FsApi
         }
         var uri = BuildUrl(verb, command, args);
         var response = await _httpClient.GetAsync(uri);
-        var r = await ResponseParser.Parse(verb, command, response);
+        response.EnsureSuccessStatusCode();
+        var s = await response.Content.ReadAsStringAsync();
+        var r = ResponseParser.Parse(verb, command, s);
         result = (FsResult<T>)r;
       }
       catch (Exception e)

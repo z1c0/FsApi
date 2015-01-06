@@ -1,0 +1,40 @@
+<fsapiResponse>
+<status>FS_OK</status>
+<item key="0">
+<field name="label"><c8_array>Mein EQ</c8_array></field>
+
+</item>
+<item key="1">
+<field name="label"><c8_array>Normal</c8_array></field>
+
+</item>
+<item key="2">
+<field name="label"><c8_array>Mittig</c8_array></field>
+
+</item>
+<item key="3">
+<field name="label"><c8_array>Jazz</c8_array></field>
+
+</item>
+<item key="4">
+<field name="label"><c8_array>Rock</c8_array></field>
+
+</item>
+<item key="5">
+<field name="label"><c8_array>Soundtrack</c8_array></field>
+
+</item>
+<item key="6">
+<field name="label"><c8_array>Klassik</c8_array></field>
+
+</item>
+<item key="7">
+<field name="label"><c8_array>Pop</c8_array></field>
+
+</item>
+<item key="8">
+<field name="label"><c8_array>Nachrichten</c8_array></field>
+
+</item>
+<listend/>
+</fsapiResponse>

@@ -1,0 +1,52 @@
+<fsapiResponse>
+<status>FS_OK</status>
+<item key="0">
+<field name="id"><c8_array>IR</c8_array></field>
+<field name="selectable"><u8>1</u8></field>
+<field name="label"><c8_array>Internet Radio</c8_array></field>
+
+</item>
+<item key="1">
+<field name="id"><c8_array>Spotify</c8_array></field>
+<field name="selectable"><u8>1</u8></field>
+<field name="label"><c8_array>Spotify</c8_array></field>
+
+</item>
+<item key="2">
+<field name="id"><c8_array>MP</c8_array></field>
+<field name="selectable"><u8>1</u8></field>
+<field name="label"><c8_array>Media Player</c8_array></field>
+
+</item>
+<item key="3">
+<field name="id"><c8_array>DAB</c8_array></field>
+<field name="selectable"><u8>1</u8></field>
+<field name="label"><c8_array>DAB</c8_array></field>
+
+</item>
+<item key="4">
+<field name="id"><c8_array>FM</c8_array></field>
+<field name="selectable"><u8>1</u8></field>
+<field name="label"><c8_array>UKW</c8_array></field>
+
+</item>
+<item key="5">
+<field name="id"><c8_array>AUXIN</c8_array></field>
+<field name="selectable"><u8>1</u8></field>
+<field name="label"><c8_array>AUX-Modus</c8_array></field>
+
+</item>
+<item key="6">
+<field name="id"><c8_array>DMR</c8_array></field>
+<field name="selectable"><u8>0</u8></field>
+<field name="label"><c8_array>DMR</c8_array></field>
+
+</item>
+<item key="7">
+<field name="id"><c8_array>NETWORK</c8_array></field>
+<field name="selectable"><u8>0</u8></field>
+<field name="label"><c8_array></c8_array></field>
+
+</item>
+<listend/>
+</fsapiResponse>
