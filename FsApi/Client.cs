@@ -52,9 +52,35 @@ namespace FsApi
       return await GetResponse<byte>(Command.VOLUME);
     }
 
+    public async Task<FsResult<IEnumerable<RadioMode>>> GetRadioModes()
+    {
+      return await GetResponse<IEnumerable<RadioMode>>(Command.VALID_MODES, null, Verb.ListGetNext);
+    }
+
+    public async Task<FsResult<IEnumerable<EqualizerPreset>>> GetEqualizerPresets()
+    {
+      return await GetResponse<IEnumerable<EqualizerPreset>>(Command.EQUALIZER_PRESETS, null, Verb.ListGetNext);
+    }
+
+    public async Task<FsResult<IEnumerable<Preset>>> GetPresets()
+    {
+      var args = CreateArgs("maxItems", "20");
+      return await GetResponse<IEnumerable<Preset>>(Command.PRESETS, args, Verb.ListGetNext);
+    }
+
     public async Task<FsResult<byte>> GetVolumeSteps()
     {
       return await GetResponse<byte>(Command.VOLUME_STEPS);
+    }
+
+    private Dictionary<string, string> CreateArgs(Verb verb, params string[] args)
+    {
+      var d = CreateArgs(args);
+      if (verb == Verb.ListGetNext) // TODO
+      {
+        d["maxItems"] = ushort.MaxValue.ToString();
+      }
+      return d;
     }
 
     private Dictionary<string, string> CreateArgs(params string[] args)
@@ -81,7 +107,7 @@ namespace FsApi
       {
         if (args == null)
         {
-          args = CreateArgs();
+          args = CreateArgs(verb);
         }
         var uri = BuildUrl(verb, command, args);
         var response = await _httpClient.GetAsync(uri);
@@ -110,11 +136,19 @@ namespace FsApi
           sb.Append("SET");
           break;
 
+        case Verb.ListGetNext:
+          sb.Append("LIST_GET_NEXT");
+          break;
+
         default:
           throw new InvalidOperationException("verb");
       }
       sb.Append('/');
       sb.Append(command);
+      if (verb == Verb.ListGetNext)
+      {
+        sb.Append("/-1"); // TODO
+      }
       var delim = '?';
       foreach (var e in args)
       {

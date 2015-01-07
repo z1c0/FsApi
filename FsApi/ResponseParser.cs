@@ -10,8 +10,11 @@ namespace FsApi
     internal static FsResult Parse(Verb verb, string command, string xml)
     {
       var xdoc = XDocument.Parse(xml);
-      // TODO: FS_TIMEOUT
-
+      var status = xdoc.Descendants("status").First().Value;
+      if (status != "FS_OK")
+      {
+        throw new InvalidOperationException(status);
+      }
       if (verb == Verb.Get)
       {
         var value = xdoc.Descendants("value").Single();
@@ -43,46 +46,52 @@ namespace FsApi
 
           case Command.EQUALIZER_PRESETS:
             return new FsResult<IEnumerable<EqualizerPreset>>(ParseEqualizerPresets(xdoc));
+
+          case Command.PRESETS:
+            return new FsResult<IEnumerable<Preset>>(ParsePresets(xdoc));
         }
         throw new NotImplementedException(command);
       }
-      else if (verb == Verb.Get)
+      else if (verb == Verb.Set)
       {
         return new FsResult<bool>();
       }
       throw new NotImplementedException(verb.ToString());
     }
 
+    private static IEnumerable<Preset> ParsePresets(XDocument xdoc)
+    {
+      return
+        from i in xdoc.Descendants("item")
+        select new Preset
+        {
+          Key = int.Parse(i.Attribute("key").Value),
+          Label = ParseString(GetField(i, "name")),
+        };
+    }
+
     private static IEnumerable<EqualizerPreset> ParseEqualizerPresets(XDocument xdoc)
     {
-      var presets = new List<EqualizerPreset>();
-      var items = xdoc.Descendants("item");
-      foreach (var i in items)
-      {
-        presets.Add(new EqualizerPreset
+      return
+        from i in xdoc.Descendants("item")
+        select new EqualizerPreset
         {
           Key = int.Parse(i.Attribute("key").Value),
           Label = ParseString(GetField(i, "label")),
-        });
-      }
-      return presets;
+        };
     }
 
     private static IEnumerable<RadioMode> ParseValidModes(XDocument xdoc)
     {
-      var modes = new List<RadioMode>();
-      var items = xdoc.Descendants("item");
-      foreach (var i in items)
-      {
-        modes.Add(new RadioMode
+      return
+        from i in xdoc.Descendants("item")
+        select new RadioMode
         {
-          Key = int.Parse(i.Attribute("key").Value ),
+          Key = int.Parse(i.Attribute("key").Value),
           Id = ParseString(GetField(i, "id")),
           Label = ParseString(GetField(i, "label")),
           IsSelectable = ParseBool(GetField(i, "selectable"))
-        });
-      }
-      return modes;
+        };
     }
 
     private static XElement GetField(XElement e, string name)

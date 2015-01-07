@@ -17,6 +17,14 @@ namespace FsApi.UnitTest
     }
 
     [TestMethod]
+    public void ParsePresets()
+    {
+      var r = (FsResult<IEnumerable<Preset>>)ResponseParser.Parse(Verb.ListGetNext, Command.PRESETS, Xml.Presets);
+      Assert.IsTrue(r.Succeeded);
+      Assert.AreEqual(10, r.Value.Count());
+    }
+
+    [TestMethod]
     public void ParseEqualizerPresets()
     {
       var r = (FsResult<IEnumerable<EqualizerPreset>>)ResponseParser.Parse(Verb.ListGetNext, Command.EQUALIZER_PRESETS, Xml.EqualizerPresets);

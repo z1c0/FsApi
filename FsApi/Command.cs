@@ -11,5 +11,6 @@
     public const string MODE = "netRemote.sys.mode";
     public const string VALID_MODES = "netRemote.sys.caps.validModes";
     public const string EQUALIZER_PRESETS = "netRemote.sys.caps.eqPresets";
+    public const string PRESETS = "netRemote.nav.presets";
   }
 }

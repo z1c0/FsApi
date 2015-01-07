@@ -93,6 +93,41 @@ namespace FsApi.UnitTest {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to fsapiResponse&gt;
+        ///&lt;status&gt;FS_OK&lt;/status&gt;
+        ///&lt;item key=&quot;0&quot;&gt;
+        ///&lt;field name=&quot;name&quot;&gt;&lt;c8_array&gt;&lt;/c8_array&gt;&lt;/field&gt;
+        ///
+        ///&lt;/item&gt;
+        ///&lt;item key=&quot;1&quot;&gt;
+        ///&lt;field name=&quot;name&quot;&gt;&lt;c8_array&gt;&lt;/c8_array&gt;&lt;/field&gt;
+        ///
+        ///&lt;/item&gt;
+        ///&lt;item key=&quot;2&quot;&gt;
+        ///&lt;field name=&quot;name&quot;&gt;&lt;c8_array&gt;&lt;/c8_array&gt;&lt;/field&gt;
+        ///
+        ///&lt;/item&gt;
+        ///&lt;item key=&quot;3&quot;&gt;
+        ///&lt;field name=&quot;name&quot;&gt;&lt;c8_array&gt;&lt;/c8_array&gt;&lt;/field&gt;
+        ///
+        ///&lt;/item&gt;
+        ///&lt;item key=&quot;4&quot;&gt;
+        ///&lt;field name=&quot;name&quot;&gt;&lt;c8_array&gt;&lt;/c8_array&gt;&lt;/field&gt;
+        ///
+        ///&lt;/item&gt;
+        ///&lt;item key=&quot;5&quot;&gt;
+        ///&lt;field name=&quot;name&quot;&gt;&lt;c8_array&gt;&lt;/c8_array&gt;&lt;/field&gt;
+        ///
+        ///&lt;/item&gt;
+        ///&lt;item key= [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Presets {
+            get {
+                return ResourceManager.GetString("Presets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;fsapiResponse&gt;
         ///&lt;status&gt;FS_OK&lt;/status&gt;
         ///&lt;item key=&quot;0&quot;&gt;

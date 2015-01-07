@@ -45,6 +45,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="EqualizerPreset.cs" />
     <Compile Include="KeyLabelItem.cs" />
+    <Compile Include="Preset.cs" />
     <Compile Include="RadioMode.cs" />
     <Compile Include="Verb.cs" />
     <Compile Include="Command.cs" />
