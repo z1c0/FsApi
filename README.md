@@ -11,7 +11,7 @@ This library is used to create a remote control application for Windows Phone si
 ## Usage:
 
 ```csharp
-var client = new Client(location, pin);
-var session = await client.CreateSession();
+var client = new Client(location);
+var session = await client.CreateSession(pin);
 var modes = client.GetRadioModes();
 await client.SetVolume(10);
