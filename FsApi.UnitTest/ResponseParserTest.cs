@@ -36,30 +36,30 @@ namespace FsApi.UnitTest
     [TestMethod]
     public void ParseNotificationSingle()
     {
-      var r = (FsResult<IEnumerable<FsNotification>>)ResponseParser.Parse(Verb.GetNotify, null, Xml.Notification);
+      var r = (FsResult<IEnumerable<FsNotification>>)ResponseParser.Parse(Verb.GetNotify, null, Xml.NotificationSingle);
       Assert.IsTrue(r.Succeeded);
       Assert.AreEqual(1, r.Value.Count());
-      Assert.AreEqual("netremote.play.info.name", r.Value.ElementAt(0).Name);
+      Assert.AreEqual("netremote.play.status", r.Value.ElementAt(0).Name);
+      Assert.AreEqual(2, r.Value.ElementAt(0).GetValue<byte>());
     }
 
     [TestMethod]
     public void ParseNotificationMultiple()
     {
-      var r = (FsResult<IEnumerable<FsNotification>>)ResponseParser.Parse(Verb.GetNotify, null, Xml.Notification);
+      var r = (FsResult<IEnumerable<FsNotification>>)ResponseParser.Parse(Verb.GetNotify, null, Xml.NotificationMultiple);
       Assert.IsTrue(r.Succeeded);
       Assert.AreEqual(2, r.Value.Count());
       Assert.AreEqual("netremote.play.info.name", r.Value.ElementAt(0).Name);
-      Assert.AreEqual("Lounge FM Vienna", r.Value.ElementAt(0).Value);
+      Assert.AreEqual("Lounge FM Vienna", r.Value.ElementAt(0).GetValue<string>());
       Assert.AreEqual("netremote.play.info.text", r.Value.ElementAt(1).Name);
-      Assert.AreEqual("Coralie Clément - L'Ombre Et La Lumiere", r.Value.ElementAt(1).Value);
+      Assert.AreEqual("Coralie Clément - L'Ombre Et La Lumiere", r.Value.ElementAt(1).GetValue<string>());
     }
 
     [TestMethod]
+    [ExpectedException(typeof(FsException))]
     public void ParseTimeout()
     {
-      var r = (FsResult<IEnumerable<FsNotification>>)ResponseParser.Parse(Verb.GetNotify, null, Xml.Timeout);
-      Assert.IsTrue(r.Succeeded);
-      Assert.IsTrue(false);
+      ResponseParser.Parse(Verb.GetNotify, null, Xml.Timeout);
     }
   }
 }

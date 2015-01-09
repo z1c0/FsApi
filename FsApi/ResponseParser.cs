@@ -13,7 +13,7 @@ namespace FsApi
       var status = xdoc.Descendants("status").First().Value;
       if (status != "FS_OK")
       {
-        throw new InvalidOperationException(status);
+        throw new FsException(status);
       }
       if (verb == Verb.CreateSession)
       {

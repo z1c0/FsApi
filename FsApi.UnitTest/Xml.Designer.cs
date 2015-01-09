@@ -101,9 +101,24 @@ namespace FsApi.UnitTest {
         ///&lt;/notify&gt;
         ///&lt;/fsapiResponse&gt;.
         /// </summary>
-        internal static string Notification {
+        internal static string NotificationMultiple {
             get {
-                return ResourceManager.GetString("Notification", resourceCulture);
+                return ResourceManager.GetString("NotificationMultiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;fsapiResponse&gt;
+        ///&lt;status&gt;FS_OK&lt;/status&gt;
+        ///&lt;notify node=&quot;netremote.play.info.name&quot;&gt;&lt;value&gt;&lt;c8_array&gt;Lounge FM Vienna&lt;/c8_array&gt;&lt;/value&gt;
+        ///&lt;/notify&gt;
+        ///&lt;notify node=&quot;netremote.play.info.text&quot;&gt;&lt;value&gt;&lt;c8_array&gt;Coralie Clément - L&amp;apos;Ombre Et La Lumiere&lt;/c8_array&gt;&lt;/value&gt;
+        ///&lt;/notify&gt;
+        ///&lt;/fsapiResponse&gt;.
+        /// </summary>
+        internal static string NotificationSingle {
+            get {
+                return ResourceManager.GetString("NotificationSingle", resourceCulture);
             }
         }
         

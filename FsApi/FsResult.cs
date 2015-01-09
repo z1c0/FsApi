@@ -8,7 +8,9 @@ namespace FsApi
 
     public Exception Error { get; internal set; }
 
-    public bool Succeeded { get { return Error == null; } }
+    public bool Succeeded { get { return Error == null && !IsTimeOut; } }
+
+    public bool IsTimeOut { get; private set; }
 
     public override string ToString()
     {

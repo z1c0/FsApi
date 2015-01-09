@@ -67,6 +67,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Xml.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>Xml.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
@@ -80,10 +81,13 @@
     <None Include="Resources\Presets.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Notification.txt" />
+    <None Include="Resources\NotificationMultiple.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Timeout.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NotificationSingle.txt" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

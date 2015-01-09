@@ -1,0 +1,5 @@
+<fsapiResponse>
+<status>FS_OK</status>
+<notify node="netremote.play.status"><value><u8>2</u8></value>
+</notify>
+</fsapiResponse>

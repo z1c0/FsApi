@@ -121,8 +121,11 @@
   <data name="EqualizerPresets" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\EqualizerPresets.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="Notification" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Notification.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="NotificationMultiple" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\NotificationMultiple.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
+  </data>
+  <data name="NotificationSingle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\NotificationSingle.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="Presets" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Presets.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
