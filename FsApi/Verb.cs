@@ -2,6 +2,7 @@
 {
   internal enum Verb
   {
+    CreateSession,
     Get,
     Set,
     ListGetNext,

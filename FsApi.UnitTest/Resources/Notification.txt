@@ -1,0 +1,7 @@
+<fsapiResponse>
+<status>FS_OK</status>
+<notify node="netremote.play.info.name"><value><c8_array>Lounge FM Vienna</c8_array></value>
+</notify>
+<notify node="netremote.play.info.text"><value><c8_array>Coralie Clément - L&apos;Ombre Et La Lumiere</c8_array></value>
+</notify>
+</fsapiResponse>

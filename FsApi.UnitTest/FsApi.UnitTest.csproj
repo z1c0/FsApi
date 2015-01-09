@@ -79,6 +79,12 @@
   <ItemGroup>
     <None Include="Resources\Presets.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Notification.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Timeout.txt" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

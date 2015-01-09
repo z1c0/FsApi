@@ -15,7 +15,12 @@ namespace FsApi
       {
         throw new InvalidOperationException(status);
       }
-      if (verb == Verb.Get)
+      if (verb == Verb.CreateSession)
+      {
+        var sessionId = xdoc.Descendants("sessionId").First().Value;
+        return new FsResult<int>(int.Parse(sessionId));
+      }
+      else if (verb == Verb.Get)
       {
         var value = xdoc.Descendants("value").Single();
         switch (command)
@@ -52,14 +57,29 @@ namespace FsApi
         }
         throw new NotImplementedException(command);
       }
+      else if (verb == Verb.GetNotify)
+      {
+        return new FsResult<IEnumerable<FsNotification>>(ParseNotifications(xdoc));
+      }
       else if (verb == Verb.Set)
       {
-        return new FsResult<bool>();
+        return new FsResult<FsVoid>();
       }
       throw new NotImplementedException(verb.ToString());
     }
 
-    private static IEnumerable<Preset> ParsePresets(XDocument xdoc)
+    private static IEnumerable<FsNotification> ParseNotifications(XContainer xdoc)
+    {
+      return
+        from n in xdoc.Descendants("notify")
+        select new FsNotification
+        {
+          Name = n.Attribute("node").Value,
+          Value = ParseValue(n.Descendants("value").Single()),
+        };
+    }
+
+    private static IEnumerable<Preset> ParsePresets(XContainer xdoc)
     {
       return
         from i in xdoc.Descendants("item")
@@ -70,7 +90,7 @@ namespace FsApi
         };
     }
 
-    private static IEnumerable<EqualizerPreset> ParseEqualizerPresets(XDocument xdoc)
+    private static IEnumerable<EqualizerPreset> ParseEqualizerPresets(XContainer xdoc)
     {
       return
         from i in xdoc.Descendants("item")
@@ -81,7 +101,7 @@ namespace FsApi
         };
     }
 
-    private static IEnumerable<RadioMode> ParseValidModes(XDocument xdoc)
+    private static IEnumerable<RadioMode> ParseValidModes(XContainer xdoc)
     {
       return
         from i in xdoc.Descendants("item")
@@ -94,27 +114,44 @@ namespace FsApi
         };
     }
 
-    private static XElement GetField(XElement e, string name)
+    private static XElement GetField(XContainer e, string name)
     {
-      return e.Descendants("field").Where(f => f.Attribute("name").Value == name).Single();
+      return e.Descendants("field").Single(f => f.Attribute("name").Value == name);
     }
 
-    private static byte ParseByte(XElement value)
+    private static object ParseValue(XContainer value)
+    {
+      var type = value.Descendants().First().Name.LocalName;
+      switch (type)
+      {
+        case "u8":
+          return ParseByte(value);
+
+        case "u32":
+          return ParseInt(value);
+
+        case "c8_array":
+          return ParseString(value);
+      }
+      throw new NotImplementedException(type);
+    }
+
+    private static byte ParseByte(XContainer value)
     {
       return byte.Parse(value.Descendants("u8").Single().Value);
     }
 
-    private static int ParseInt(XElement value)
+    private static int ParseInt(XContainer value)
     {
       return byte.Parse(value.Descendants("u32").Single().Value);
     }
 
-    private static bool ParseBool(XElement value)
+    private static bool ParseBool(XContainer value)
     {
       return ParseByte(value) != 0;
     }
 
-    private static string ParseString(XElement value)
+    private static string ParseString(XContainer value)
     {
       return value.Descendants("c8_array").Single().Value;
     }

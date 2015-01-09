@@ -44,6 +44,10 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="EqualizerPreset.cs" />
+    <Compile Include="FsNotification.cs" />
+    <Compile Include="FsVoid.cs" />
+    <Compile Include="ICommunicator.cs" />
+    <Compile Include="Communicator.cs" />
     <Compile Include="KeyLabelItem.cs" />
     <Compile Include="Preset.cs" />
     <Compile Include="RadioMode.cs" />

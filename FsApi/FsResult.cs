@@ -2,8 +2,10 @@
 
 namespace FsApi
 {
-  public class FsResult
+  public abstract class FsResult
   {
+    public string Command { get; internal set; }
+
     public Exception Error { get; internal set; }
 
     public bool Succeeded { get { return Error == null; } }
