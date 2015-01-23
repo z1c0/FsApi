@@ -57,7 +57,7 @@ namespace FsApi
         }
         throw new NotImplementedException(command);
       }
-      else if (verb == Verb.GetNotify)
+      else  if (verb == Verb.GetNotify)
       {
         return new FsResult<IEnumerable<FsNotification>>(ParseNotifications(xdoc));
       }

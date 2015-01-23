@@ -9,7 +9,7 @@ namespace FsApi
   {
     private readonly ICommunicator _communicator;
 
-    public Client(Uri baseUri, int pin)
+    public Client(Uri baseUri)
     {
       _communicator = new Communicator(baseUri);
     }
