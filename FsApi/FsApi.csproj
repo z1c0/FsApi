@@ -50,6 +50,7 @@
     <Compile Include="ICommunicator.cs" />
     <Compile Include="Communicator.cs" />
     <Compile Include="KeyLabelItem.cs" />
+    <Compile Include="NavListItem.cs" />
     <Compile Include="Preset.cs" />
     <Compile Include="RadioMode.cs" />
     <Compile Include="Verb.cs" />

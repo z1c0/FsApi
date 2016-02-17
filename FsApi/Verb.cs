@@ -1,11 +1,12 @@
 ﻿namespace FsApi
 {
-  internal enum Verb
-  {
-    CreateSession,
-    Get,
-    Set,
-    ListGetNext,
-    GetNotify,
-  }
+    internal enum Verb
+    {
+        CreateSession,
+        DeleteSession,
+        Get,
+        Set,
+        ListGetNext,
+        GetNotify,
+    }
 }
