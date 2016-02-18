@@ -117,7 +117,12 @@ namespace FsApi
                 sb.Append('/');
                 sb.Append(command);
             }
-            if (verb == Verb.ListGetNext)
+            if (verb == Verb.ListGetNext && args.ContainsKey("startItem"))
+            {
+                sb.Append("/" + args["startItem"]);
+                args.Remove("startItem");
+            }
+            else if(verb == Verb.ListGetNext)
             {
                 sb.Append("/-1"); // TODO
             }

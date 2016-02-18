@@ -30,6 +30,7 @@ namespace FsApi
                 switch (command)
                 {
                     case Command.POWER:
+                    case Command.NAVSTATUS:
                         return new FsResult<bool>(ParseBool(value));
 
                     case Command.SELECTPRESET:
