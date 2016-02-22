@@ -30,20 +30,48 @@ namespace FsApi
                 switch (command)
                 {
                     case Command.POWER:
+                    case Command.NAVSTATUS:
+                    case Command.PLAY_REPEATE:
+                    case Command.PLAY_SCROBBLE:
+                    case Command.PLAY_SUFFLE:
+                    case Command.MUTE:
+                    case Command.STANDBY_NETWORK:
+                    case Command.CUSTOM_EQ_LOUDNESS:
                         return new FsResult<bool>(ParseBool(value));
 
                     case Command.SELECTPRESET:
                     case Command.MODE:
+                    case Command.PLAY_FREQU:
+                    case Command.PLAY_DURATION:
+                    case Command.PLAY_POS:
+                    case Command.MAX_FM_FREQ:
+                    case Command.MIN_FM_FREQ:
+                    case Command.STEP_FM_FREQ:
                         return new FsResult<int>(ParseInt(value));
 
                     case Command.VOLUME:
                     case Command.VOLUME_STEPS:
+                    case Command.PLAY_CONTROL:
+                    case Command.PLAY_SIGNAL:
+                    case Command.PLAY_STATUS:
+                    case Command.EQ_PRESET:
                         return new FsResult<byte>(ParseByte(value));
 
                     case Command.PLAY_INFO_NAME:
                     case Command.PLAY_INFO_TEXT:
                     case Command.PLAY_INFO_GRAPHIC:
+                    case Command.PLAY_ALBUM:
+                    case Command.PLAY_ARTIST:
+                    case Command.NAME:
+                    case Command.VERSION:
+                    case Command.DATE:
+                    case Command.TIME:
                         return new FsResult<string>(ParseString(value));
+
+                    case Command.CUSTOM_EQ_BASS:
+                    case Command.CUSTOM_EQ_TREBLE:
+                    case Command.CUSTOM_EQ_RAW:
+                        return new FsResult<short>(ParseShort(value));
                 }
                 throw new NotImplementedException(command);
             }
@@ -62,7 +90,9 @@ namespace FsApi
 
                     case Command.NAVLIST:
                         return new FsResult<IEnumerable<NavListItem>>(ParseNavList(xdoc));
-                        
+
+                    case Command.CUSTOM_EQ_BANDS:
+                        return new FsResult<IEnumerable<EQBandListItem>>(ParseEQBandList(xdoc));
 
                 }
                 throw new NotImplementedException(command);
@@ -140,6 +170,21 @@ namespace FsApi
         }
 
 
+        private static IEnumerable<EQBandListItem> ParseEQBandList(XContainer xdoc)
+        {
+            var result =
+              from i in xdoc.Descendants("item")
+              select new EQBandListItem
+              {
+                  Key = int.Parse(i.Attribute("key").Value),
+                  Label = ParseValue(GetField(i, "label")).ToString(),
+                  min = ParseShort(GetField(i, "min")),
+                  max = ParseShort(GetField(i, "max"))
+              };
+            return result;
+        }
+
+
         private static IEnumerable<NavListItem> ParsePresetList(XContainer xdoc)
         {
             var result =
@@ -167,6 +212,9 @@ namespace FsApi
                 case "u8":
                     return ParseByte(value);
 
+                case "s16":
+                    return ParseShort(value);
+
                 case "u32":
                     return ParseInt(value);
 
@@ -181,9 +229,14 @@ namespace FsApi
             return byte.Parse(value.Descendants("u8").Single().Value);
         }
 
+        private static short ParseShort(XContainer value)
+        {
+            return short.Parse(value.Descendants("s16").Single().Value);
+        }
+
         private static int ParseInt(XContainer value)
         {
-            return byte.Parse(value.Descendants("u32").Single().Value);
+            return Int32.Parse(value.Descendants("u32").Single().Value);
         }
 
         private static bool ParseBool(XContainer value)

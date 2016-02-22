@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="EQBandListItem.cs" />
     <Compile Include="EqualizerPreset.cs" />
     <Compile Include="FsException.cs" />
     <Compile Include="FsNotification.cs" />
