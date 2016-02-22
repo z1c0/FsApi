@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="EQBandListItem.cs" />
     <Compile Include="EqualizerPreset.cs" />
     <Compile Include="FsException.cs" />
     <Compile Include="FsNotification.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="ICommunicator.cs" />
     <Compile Include="Communicator.cs" />
     <Compile Include="KeyLabelItem.cs" />
+    <Compile Include="NavListItem.cs" />
     <Compile Include="Preset.cs" />
     <Compile Include="RadioMode.cs" />
     <Compile Include="Verb.cs" />
