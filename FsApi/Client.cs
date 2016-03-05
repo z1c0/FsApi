@@ -196,6 +196,18 @@ namespace FsApi
         }
 
         /// <summary>
+        /// Search in current nav list for Values
+        /// </summary>
+        /// <param name="SearchValue"></param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> searchTermNavList(String SearchValue)
+        {
+            var args = CreateArgs("value", SearchValue.ToString());
+            return _communicator.GetResponse<FsVoid>(Command.SEARCH, args, Verb.Set);
+        }
+
+
+        /// <summary>
         /// Enable getMenuList(), setSelectedItem(), setNavigtion() the are olny working if this is enabled Every change of the system mode, will disable the nav state to reset the current menu-position.
         /// </summary>
         /// <param name="on">true: working, false: not working</param>
