@@ -130,6 +130,18 @@ namespace FsApi
         }
 
         /// <summary>
+        /// Set current Station as Preset 
+        /// </summary>
+        /// <param name="Number">Preset Number 0-9</param>
+        /// <returns></returns>
+        public Task<FsResult<int>> getSelectedPreset(int Number)
+        {
+
+            var args = CreateArgs("value", Number.ToString());
+            return _communicator.GetResponse<int>(Command.PLAY_ADDPRESET, args, Verb.Set);
+        }
+
+        /// <summary>
         /// Set Selected Preset 
         /// </summary>
         /// <param name="presetNr">preset id from GetPresets()</param>
@@ -632,6 +644,29 @@ namespace FsApi
         public Task<FsResult<string>> GetTime()
         {
             return _communicator.GetResponse<string>(Command.TIME);
+        }
+
+        /// <summary>
+        /// get DAB RadioDNS Name
+        /// </summary>
+        /// <returns></returns>
+        public async Task<FsResult<string>> GetDABRadiDNSInfo()
+        {
+            try {
+                var ecc = (await _communicator.GetResponse<byte>(Command.DAB_ECC)).Value.ToString("X");
+
+                var eid = (await _communicator.GetResponse<ushort>(Command.DAB_EID)).Value.ToString("X");
+
+                var sid = (await _communicator.GetResponse<int>(Command.DAB_SID)).Value.ToString("X");
+
+                var scid = (await _communicator.GetResponse<byte>(Command.DAB_SCID)).Value.ToString("X");
+                return new FsResult<string>(scid + "." + sid + "." + eid + "." + sid[0] + ecc + ".dab.radiodns.org");
+            }
+            catch
+            {
+                return new FsResult<string>(null);
+            }
+            
         }
 
 

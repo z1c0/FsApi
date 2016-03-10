@@ -58,5 +58,14 @@
         public const string PLAY_SUFFLE = "netRemote.play.shuffle";
         public const string PLAY_SIGNAL = "netRemote.play.signalStrength";
         public const string PLAY_STATUS = "netRemote.play.status";
+
+
+        //ID's:
+
+        public const string DAB_ECC = "netRemote.play.serviceIds.ecc";
+        public const string DAB_EID = "netRemote.play.serviceIds.dabEnsembleId";
+        public const string DAB_SID = "netRemote.play.serviceIds.dabServiceId";
+        public const string DAB_SCID = "netRemote.play.serviceIds.dabScids";
+        public const string FM_RDSPI = "netRemote.play.serviceIds.fmRdsPi";
     }
 }
