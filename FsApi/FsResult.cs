@@ -20,7 +20,11 @@ namespace FsApi
 
   public class FsResult<T> : FsResult
   {
-    internal FsResult(T value = default(T))
+        public FsResult()
+        {
+        }
+
+        internal FsResult(T value = default(T))
     {
       Value = value;
     }

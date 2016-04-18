@@ -48,10 +48,10 @@ namespace FsApi
                     case Command.MIN_FM_FREQ:
                     case Command.STEP_FM_FREQ:
                     case Command.DAB_SID:
-                    case Command.FM_RDSPI:
                         return new FsResult<int>(ParseInt(value));
 
                     case Command.DAB_EID:
+                    case Command.FM_RDSPI:
                         return new FsResult<ushort>(ParseUshort(value));
 
                     case Command.VOLUME:
@@ -62,6 +62,7 @@ namespace FsApi
                     case Command.EQ_PRESET:
                     case Command.DAB_ECC:
                     case Command.DAB_SCID:
+                    case Command.WLAN_STREGHT:
                         return new FsResult<byte>(ParseByte(value));
 
                     case Command.PLAY_INFO_NAME:

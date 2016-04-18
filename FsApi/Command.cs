@@ -27,7 +27,7 @@
         public const string DATE = "netRemote.sys.clock.localDate";
         public const string TIME = "netRemote.sys.clock.localTime";
 
-
+        public const string WLAN_STREGHT = "netRemote.sys.net.wlan.rssi";
 
         //Nav:
         public const string PRESETS = "netRemote.nav.presets";

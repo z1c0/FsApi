@@ -618,6 +618,18 @@ namespace FsApi
         }
 
 
+        /// <summary>
+        /// Set device name
+        /// </summary>
+        /// <param name="Name">New Device Name</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> SetDeviceName(String Name)
+        {
+            var args = CreateArgs("value", Name);
+            return _communicator.GetResponse<FsVoid>(Command.NAME, args, Verb.Set);
+        }
+
+
 
         /// <summary>
         /// get Device version string
@@ -626,6 +638,16 @@ namespace FsApi
         public Task<FsResult<string>> GetDeviceVersion()
         {
             return _communicator.GetResponse<string>(Command.VERSION);
+        }
+
+
+        /// <summary>
+        /// get Device WLAN Signal Strength
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<byte>> GetWLANSignal()
+        {
+            return _communicator.GetResponse<byte>(Command.WLAN_STREGHT);
         }
 
         /// <summary>
@@ -652,7 +674,8 @@ namespace FsApi
         /// <returns></returns>
         public async Task<FsResult<string>> GetDABRadiDNSInfo()
         {
-            try {
+            try
+            {
                 var ecc = (await _communicator.GetResponse<byte>(Command.DAB_ECC)).Value.ToString("X");
 
                 var eid = (await _communicator.GetResponse<ushort>(Command.DAB_EID)).Value.ToString("X");
@@ -666,7 +689,30 @@ namespace FsApi
             {
                 return new FsResult<string>(null);
             }
-            
+
+        }
+
+
+        /// <summary>
+        /// get FM RadioDNS Name
+        /// </summary>
+        /// <returns></returns>
+        public async Task<FsResult<string>> GetFMRadiDNSInfo()
+        {
+            try
+            {
+                var ecc = (await _communicator.GetResponse<byte>(Command.DAB_ECC)).Value.ToString("X");
+
+                var sid = (await _communicator.GetResponse<ushort>(Command.FM_RDSPI)).Value.ToString("X");
+
+                var freq = (await _communicator.GetResponse<int>(Command.PLAY_FREQU)).Value.ToString();
+                return new FsResult<string>(freq + "." + sid + "." + sid[0] + ecc + ".fm.radiodns.org");
+            }
+            catch
+            {
+                return new FsResult<string>(null);
+            }
+
         }
 
 
