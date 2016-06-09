@@ -6,7 +6,7 @@ namespace FsApi
   {
     public string Command { get; internal set; }
 
-    public Exception Error { get; internal set; }
+    public Exception Error { get; set; }
 
     public bool Succeeded { get { return Error == null && !IsTimeOut; } }
 

@@ -48,6 +48,7 @@ namespace FsApi
                     case Command.MIN_FM_FREQ:
                     case Command.STEP_FM_FREQ:
                     case Command.DAB_SID:
+                    case Command.SLEEP:
                         return new FsResult<int>(ParseInt(value));
 
                     case Command.DAB_EID:
@@ -74,6 +75,8 @@ namespace FsApi
                     case Command.VERSION:
                     case Command.DATE:
                     case Command.TIME:
+                    case Command.WIRED_MAC:
+                    case Command.WIRELESS_MAC:
                         return new FsResult<string>(ParseString(value));
 
                     case Command.CUSTOM_EQ_BASS:

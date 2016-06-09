@@ -609,6 +609,27 @@ namespace FsApi
 
 
         /// <summary>
+        /// get Sleep time left
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<int>> GetSleep()
+        {
+            return _communicator.GetResponse<int>(Command.SLEEP);
+        }
+
+        /// <summary>
+        /// set Sleep time
+        /// </summary>
+        /// <param name="Seconds">tSeconds to Sleep</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setSleep(int Seconds)
+        {
+            var args = CreateArgs("value", Seconds.ToString());
+            return _communicator.GetResponse<FsVoid>(Command.SLEEP, args, Verb.Set);
+        }
+
+
+        /// <summary>
         /// get device name
         /// </summary>
         /// <returns></returns>
@@ -648,6 +669,24 @@ namespace FsApi
         public Task<FsResult<byte>> GetWLANSignal()
         {
             return _communicator.GetResponse<byte>(Command.WLAN_STREGHT);
+        }
+
+        /// <summary>
+        /// get Device WLAN MAC Adress
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<String>> GetWLANMAC()
+        {
+            return _communicator.GetResponse<String>(Command.WIRELESS_MAC);
+        }
+
+        /// <summary>
+        /// get Device LAN MAC Adress
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<String>> GetLANMAC()
+        {
+            return _communicator.GetResponse<String>(Command.WIRED_MAC);
         }
 
         /// <summary>

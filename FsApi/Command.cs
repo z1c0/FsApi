@@ -19,6 +19,7 @@
         public const string STEP_FM_FREQ = "netRemote.sys.caps.fmFreqRange.stepSize";
         public const string MAX_FM_FREQ = "netRemote.sys.caps.fmFreqRange.upper";
         public const string CUSTOM_EQ_BANDS = "netRemote.sys.caps.eqBands";
+        public const string SLEEP = "netRemote.sys.sleep";
 
         public const string NAME = "netRemote.sys.info.friendlyName";
         public const string VERSION = "netRemote.sys.info.version";
@@ -28,6 +29,8 @@
         public const string TIME = "netRemote.sys.clock.localTime";
 
         public const string WLAN_STREGHT = "netRemote.sys.net.wlan.rssi";
+        public const string WIRED_MAC = "netRemote.sys.net.wired.macAddress";
+        public const string WIRELESS_MAC = "netRemote.sys.net.wlan.macAddress";
 
         //Nav:
         public const string PRESETS = "netRemote.nav.presets";
