@@ -6,7 +6,7 @@ namespace FsApi
   {
     public string Command { get; internal set; }
 
-    public Exception Error { get; internal set; }
+    public Exception Error { get; set; }
 
     public bool Succeeded { get { return Error == null && !IsTimeOut; } }
 
@@ -20,7 +20,11 @@ namespace FsApi
 
   public class FsResult<T> : FsResult
   {
-    internal FsResult(T value = default(T))
+        public FsResult()
+        {
+        }
+
+        internal FsResult(T value = default(T))
     {
       Value = value;
     }

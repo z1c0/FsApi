@@ -130,6 +130,18 @@ namespace FsApi
         }
 
         /// <summary>
+        /// Set current Station as Preset 
+        /// </summary>
+        /// <param name="Number">Preset Number 0-9</param>
+        /// <returns></returns>
+        public Task<FsResult<int>> getSelectedPreset(int Number)
+        {
+
+            var args = CreateArgs("value", Number.ToString());
+            return _communicator.GetResponse<int>(Command.PLAY_ADDPRESET, args, Verb.Set);
+        }
+
+        /// <summary>
         /// Set Selected Preset 
         /// </summary>
         /// <param name="presetNr">preset id from GetPresets()</param>
@@ -194,6 +206,18 @@ namespace FsApi
             var args = CreateArgs("value", ItemNr.ToString());
             return _communicator.GetResponse<FsVoid>(Command.NAVIGATE, args, Verb.Set);
         }
+
+        /// <summary>
+        /// Search in current nav list for Values
+        /// </summary>
+        /// <param name="SearchValue"></param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> searchTermNavList(String SearchValue)
+        {
+            var args = CreateArgs("value", SearchValue.ToString());
+            return _communicator.GetResponse<FsVoid>(Command.SEARCH, args, Verb.Set);
+        }
+
 
         /// <summary>
         /// Enable getMenuList(), setSelectedItem(), setNavigtion() the are olny working if this is enabled Every change of the system mode, will disable the nav state to reset the current menu-position.
@@ -585,12 +609,45 @@ namespace FsApi
 
 
         /// <summary>
+        /// get Sleep time left
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<int>> GetSleep()
+        {
+            return _communicator.GetResponse<int>(Command.SLEEP);
+        }
+
+        /// <summary>
+        /// set Sleep time
+        /// </summary>
+        /// <param name="Seconds">tSeconds to Sleep</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setSleep(int Seconds)
+        {
+            var args = CreateArgs("value", Seconds.ToString());
+            return _communicator.GetResponse<FsVoid>(Command.SLEEP, args, Verb.Set);
+        }
+
+
+        /// <summary>
         /// get device name
         /// </summary>
         /// <returns></returns>
         public Task<FsResult<string>> GetDeviceName()
         {
             return _communicator.GetResponse<string>(Command.NAME);
+        }
+
+
+        /// <summary>
+        /// Set device name
+        /// </summary>
+        /// <param name="Name">New Device Name</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> SetDeviceName(String Name)
+        {
+            var args = CreateArgs("value", Name);
+            return _communicator.GetResponse<FsVoid>(Command.NAME, args, Verb.Set);
         }
 
 
@@ -602,6 +659,34 @@ namespace FsApi
         public Task<FsResult<string>> GetDeviceVersion()
         {
             return _communicator.GetResponse<string>(Command.VERSION);
+        }
+
+
+        /// <summary>
+        /// get Device WLAN Signal Strength
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<byte>> GetWLANSignal()
+        {
+            return _communicator.GetResponse<byte>(Command.WLAN_STREGHT);
+        }
+
+        /// <summary>
+        /// get Device WLAN MAC Adress
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<String>> GetWLANMAC()
+        {
+            return _communicator.GetResponse<String>(Command.WIRELESS_MAC);
+        }
+
+        /// <summary>
+        /// get Device LAN MAC Adress
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<String>> GetLANMAC()
+        {
+            return _communicator.GetResponse<String>(Command.WIRED_MAC);
         }
 
         /// <summary>
@@ -620,6 +705,53 @@ namespace FsApi
         public Task<FsResult<string>> GetTime()
         {
             return _communicator.GetResponse<string>(Command.TIME);
+        }
+
+        /// <summary>
+        /// get DAB RadioDNS Name
+        /// </summary>
+        /// <returns></returns>
+        public async Task<FsResult<string>> GetDABRadiDNSInfo()
+        {
+            try
+            {
+                var ecc = (await _communicator.GetResponse<byte>(Command.DAB_ECC)).Value.ToString("X");
+
+                var eid = (await _communicator.GetResponse<ushort>(Command.DAB_EID)).Value.ToString("X");
+
+                var sid = (await _communicator.GetResponse<int>(Command.DAB_SID)).Value.ToString("X");
+
+                var scid = (await _communicator.GetResponse<byte>(Command.DAB_SCID)).Value.ToString("X");
+                return new FsResult<string>(scid + "." + sid + "." + eid + "." + sid[0] + ecc + ".dab.radiodns.org");
+            }
+            catch
+            {
+                return new FsResult<string>(null);
+            }
+
+        }
+
+
+        /// <summary>
+        /// get FM RadioDNS Name
+        /// </summary>
+        /// <returns></returns>
+        public async Task<FsResult<string>> GetFMRadiDNSInfo()
+        {
+            try
+            {
+                var ecc = (await _communicator.GetResponse<byte>(Command.DAB_ECC)).Value.ToString("X");
+
+                var sid = (await _communicator.GetResponse<ushort>(Command.FM_RDSPI)).Value.ToString("X");
+
+                var freq = (await _communicator.GetResponse<int>(Command.PLAY_FREQU)).Value.ToString();
+                return new FsResult<string>(freq + "." + sid + "." + sid[0] + ecc + ".fm.radiodns.org");
+            }
+            catch
+            {
+                return new FsResult<string>(null);
+            }
+
         }
 
 

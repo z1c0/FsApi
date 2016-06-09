@@ -47,7 +47,13 @@ namespace FsApi
                     case Command.MAX_FM_FREQ:
                     case Command.MIN_FM_FREQ:
                     case Command.STEP_FM_FREQ:
+                    case Command.DAB_SID:
+                    case Command.SLEEP:
                         return new FsResult<int>(ParseInt(value));
+
+                    case Command.DAB_EID:
+                    case Command.FM_RDSPI:
+                        return new FsResult<ushort>(ParseUshort(value));
 
                     case Command.VOLUME:
                     case Command.VOLUME_STEPS:
@@ -55,6 +61,9 @@ namespace FsApi
                     case Command.PLAY_SIGNAL:
                     case Command.PLAY_STATUS:
                     case Command.EQ_PRESET:
+                    case Command.DAB_ECC:
+                    case Command.DAB_SCID:
+                    case Command.WLAN_STREGHT:
                         return new FsResult<byte>(ParseByte(value));
 
                     case Command.PLAY_INFO_NAME:
@@ -66,6 +75,8 @@ namespace FsApi
                     case Command.VERSION:
                     case Command.DATE:
                     case Command.TIME:
+                    case Command.WIRED_MAC:
+                    case Command.WIRELESS_MAC:
                         return new FsResult<string>(ParseString(value));
 
                     case Command.CUSTOM_EQ_BASS:
@@ -237,6 +248,12 @@ namespace FsApi
         private static int ParseInt(XContainer value)
         {
             return Int32.Parse(value.Descendants("u32").Single().Value);
+        }
+
+
+        private static ushort ParseUshort(XContainer value)
+        {
+            return ushort.Parse(value.Descendants("u16").Single().Value);
         }
 
         private static bool ParseBool(XContainer value)

@@ -21,10 +21,11 @@ namespace FsApi
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue() { NoCache = true };
         }
-
+        
 
         public void Dispose()
         {
+            _httpClient.CancelPendingRequests();
             _httpClient.Dispose();
         }
 
@@ -54,6 +55,10 @@ namespace FsApi
                 response.EnsureSuccessStatusCode();
                 var s = await response.Content.ReadAsStringAsync();
                 result = (FsResult<T>)ResponseParser.Parse(verb, command, s);
+            }
+            catch(HttpRequestException e)
+            {
+                result = new FsResult<T> { Error = e };
             }
             catch (Exception e)
             {
