@@ -54,7 +54,9 @@ namespace FsApi
                 var response = await _httpClient.GetAsync(uri);
                 response.EnsureSuccessStatusCode();
                 var s = await response.Content.ReadAsStringAsync();
-                result = (FsResult<T>)ResponseParser.Parse(verb, command, s);
+                if (command != null && (command.StartsWith(Command.MULTI_GROUP_VOL_CLIENT) || command.StartsWith(Command.MULTI_GROUP_MUTE_CLIENT)))
+                    command = command.Substring(0, command.Length - 1);
+               result = (FsResult<T>)ResponseParser.Parse(verb, command, s);
             }
             catch(HttpRequestException e)
             {
