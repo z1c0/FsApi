@@ -35,13 +35,13 @@ namespace FsApi
                     case Command.PLAY_SCROBBLE:
                     case Command.PLAY_SUFFLE:
                     case Command.MUTE:
+                    case Command.MULTI_GROUP_MUTE_CLIENT:
                     case Command.STANDBY_NETWORK:
                     case Command.CUSTOM_EQ_LOUDNESS:
                         return new FsResult<bool>(ParseBool(value));
 
                     case Command.SELECTPRESET:
                     case Command.MODE:
-                    case Command.PLAY_FREQU:
                     case Command.PLAY_DURATION:
                     case Command.PLAY_POS:
                     case Command.MAX_FM_FREQ:
@@ -50,6 +50,10 @@ namespace FsApi
                     case Command.DAB_SID:
                     case Command.SLEEP:
                         return new FsResult<int>(ParseInt(value));
+
+
+                    case Command.PLAY_FREQU:
+                        return new FsResult<uint>(ParseuInt(value));
 
                     case Command.DAB_EID:
                     case Command.FM_RDSPI:
@@ -64,6 +68,11 @@ namespace FsApi
                     case Command.DAB_ECC:
                     case Command.DAB_SCID:
                     case Command.WLAN_STREGHT:
+                    case Command.MULTI_DEVICE_SERVER_STATE:
+                    case Command.MULTI_DEVICE_CLIENT:
+                    case Command.MULTI_GROUP_STATE:
+                    case Command.MULTI_GROUP_VOL:
+                    case Command.MULTI_GROUP_VOL_CLIENT:
                         return new FsResult<byte>(ParseByte(value));
 
                     case Command.PLAY_INFO_NAME:
@@ -77,12 +86,17 @@ namespace FsApi
                     case Command.TIME:
                     case Command.WIRED_MAC:
                     case Command.WIRELESS_MAC:
+                    case Command.MULTI_GROUP_NAME:
+                    case Command.MULTI_GROUP_ID:
                         return new FsResult<string>(ParseString(value));
 
                     case Command.CUSTOM_EQ_BASS:
                     case Command.CUSTOM_EQ_TREBLE:
                     case Command.CUSTOM_EQ_RAW:
                         return new FsResult<short>(ParseShort(value));
+
+                    case Command.NUMENTRIES:
+                        return new FsResult<long>(ParseLong(value));
                 }
                 throw new NotImplementedException(command);
             }
@@ -104,6 +118,9 @@ namespace FsApi
 
                     case Command.CUSTOM_EQ_BANDS:
                         return new FsResult<IEnumerable<EQBandListItem>>(ParseEQBandList(xdoc));
+
+                    case Command.MULTI_LIST_ALL:
+                        return new FsResult<IEnumerable<MutliRoomItem>>(ParseMultiroomList(xdoc));
 
                 }
                 throw new NotImplementedException(command);
@@ -195,6 +212,24 @@ namespace FsApi
             return result;
         }
 
+        private static IEnumerable<MutliRoomItem> ParseMultiroomList(XContainer xdoc)
+        {
+            var result =
+              from i in xdoc.Descendants("item")
+              select new MutliRoomItem
+              {
+                  id = ParseValue(GetField(i, "udn")).ToString(),
+                  name = ParseValue(GetField(i, "friendlyname")).ToString(),
+                  ipaddress = ParseValue(GetField(i, "ipaddress")).ToString(),
+                  audiosyncversion = ParseValue(GetField(i, "audiosyncversion")).ToString(),
+                  groupid = ParseValue(GetField(i, "groupid")).ToString(),
+                  groupname = ParseValue(GetField(i, "groupname")).ToString(),
+                  grouprole = (byte)ParseValue(GetField(i, "grouprole")),
+                  clientnumber = (byte)ParseValue(GetField(i, "clientnumber"))
+              };
+            return result;
+        }
+
 
         private static IEnumerable<NavListItem> ParsePresetList(XContainer xdoc)
         {
@@ -245,9 +280,18 @@ namespace FsApi
             return short.Parse(value.Descendants("s16").Single().Value);
         }
 
+        private static long ParseLong(XContainer value)
+        {
+            return short.Parse(value.Descendants("s32").Single().Value);
+        }
+
         private static int ParseInt(XContainer value)
         {
             return Int32.Parse(value.Descendants("u32").Single().Value);
+        }
+        private static uint ParseuInt(XContainer value)
+        {
+            return uint.Parse(value.Descendants("u32").Single().Value);
         }
 
 

@@ -9,6 +9,7 @@ namespace FsApi
     {
         private readonly ICommunicator _communicator;
 
+        #region InitStuff
         /// <summary>
         /// This represents the Radio Device you need this Object to set and get data!
         /// </summary>
@@ -45,6 +46,9 @@ namespace FsApi
             return _communicator.DeleteSession();
         }
 
+        #endregion
+
+        #region Volume
         /// <summary>
         /// Set the Device Volume
         /// </summary>
@@ -75,6 +79,29 @@ namespace FsApi
         }
 
         /// <summary>
+        /// get whether or not device is muted
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<bool>> GetMute()
+        {
+            return _communicator.GetResponse<bool>(Command.MUTE);
+        }
+
+        /// <summary>
+        /// set whether or not device is muted
+        /// </summary>
+        /// <param name="on">true=Mute on , false=Mute off</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setMute(bool on)
+        {
+            var args = CreateArgs("value", (on ? 1 : 0).ToString());
+            return _communicator.GetResponse<FsVoid>(Command.MUTE, args, Verb.Set);
+        }
+
+        #endregion
+
+        #region Mode
+        /// <summary>
         /// Get a list with all available Radio Modes, like DAB,FM,AUX ...
         /// </summary>
         /// <returns></returns>
@@ -102,12 +129,10 @@ namespace FsApi
             var args = CreateArgs("value", Mode.ToString());
             return _communicator.GetResponse<FsVoid>(Command.MODE, args, Verb.Set);
         }
+        #endregion
 
-        public Task<FsResult<IEnumerable<EqualizerPreset>>> GetEqualizerPresets()
-        {
-            return _communicator.GetResponse<IEnumerable<EqualizerPreset>>(Command.EQUALIZER_PRESETS, null, Verb.ListGetNext);
-        }
-
+        #region Preset
+      
         /// <summary>
         /// Get the User Presets stored in the Radio
         /// </summary>
@@ -152,27 +177,10 @@ namespace FsApi
             return _communicator.GetResponse<FsVoid>(Command.SELECTPRESET, args, Verb.Set);
         }
 
-        /// <summary>
-        /// Get the current Powerstatus from the Radio
-        /// </summary>
-        /// <returns>True: on, False: off</returns>
-        public Task<FsResult<bool>> GetPowerStatus()
-        {
-            return _communicator.GetResponse<bool>(Command.POWER);
-        }
+        #endregion
 
-        /// <summary>
-        /// set the current Powerstatus from the Radio
-        /// </summary>
-        /// <param name="on">on: true, off: false</param>
-        /// <returns></returns>
-        public Task<FsResult<FsVoid>> setPowerStatus(bool on)
-        {
-            var args = CreateArgs("value", (on ? 1 : 0).ToString());
-            return _communicator.GetResponse<FsVoid>(Command.POWER, args, Verb.Set);
-        }
+        #region Nav
 
-        
         /// <summary>
         /// get Menu/Channel list for current Mode
         /// </summary>
@@ -239,6 +247,17 @@ namespace FsApi
             return _communicator.GetResponse<bool>(Command.NAVSTATUS);
         }
 
+        /// <summary>
+        /// Number of Items in current List
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<long>> getMenuItemsNumber()
+        {
+            return _communicator.GetResponse<long>(Command.NUMENTRIES);
+        }
+        #endregion
+
+        #region Play
 
         //Play:
 
@@ -273,25 +292,6 @@ namespace FsApi
             return _communicator.GetResponse<byte>(Command.PLAY_CONTROL, null, Verb.Get);
         }
 
-        /// <summary>
-        /// set the current frequency for fm 
-        /// </summary>
-        /// <param name="Frequency">Frequency for Station (in herz) 96700 = 96,70 MHz</param>
-        /// <returns></returns>
-        public Task<FsResult<FsVoid>> setFrequency(int Frequency)
-        {
-            var args = CreateArgs("value", Frequency.ToString());
-            return _communicator.GetResponse<FsVoid>(Command.PLAY_FREQU, args, Verb.Set);
-        }
-
-        /// <summary>
-        /// get the current frequency for fm (in herz) 96700 = 96,70 MHz
-        /// </summary>
-        /// <returns></returns>
-        public Task<FsResult<int>> getFrequency()
-        {
-            return _communicator.GetResponse<int>(Command.PLAY_FREQU);
-        }
 
         /// <summary>
         /// get the name of the album of the current song
@@ -443,148 +443,29 @@ namespace FsApi
         }
 
 
+        #endregion
 
-
+        #region SYS
         //SYS
 
         /// <summary>
-        /// get the number of the selected eq-presets
+        /// Get the current Powerstatus from the Radio
         /// </summary>
-        /// <returns></returns>
-        public Task<FsResult<byte>> GetEQPreset()
+        /// <returns>True: on, False: off</returns>
+        public Task<FsResult<bool>> GetPowerStatus()
         {
-            return _communicator.GetResponse<byte>(Command.EQ_PRESET);
+            return _communicator.GetResponse<bool>(Command.POWER);
         }
 
         /// <summary>
-        /// set the number of the selected eq-presets
+        /// set the current Powerstatus from the Radio
         /// </summary>
-        /// <param name="presetNr">Number of the Preset (get it from presetList)</param>
+        /// <param name="on">on: true, off: false</param>
         /// <returns></returns>
-        public Task<FsResult<FsVoid>> setEQPreset(int presetNr)
-        {
-            var args = CreateArgs("value", presetNr.ToString());
-            return _communicator.GetResponse<FsVoid>(Command.EQ_PRESET, args, Verb.Set);
-        }
-
-        /// <summary>
-        /// get the second value for costum eq-settings (Treble)
-        /// </summary>
-        /// <returns></returns>
-        public Task<FsResult<short>> GetEQTreble()
-        {
-            return _communicator.GetResponse<short>(Command.CUSTOM_EQ_TREBLE);
-        }
-
-        /// <summary>
-        /// set the second value for costum eq-settings (Treble)
-        /// </summary>
-        /// <param name="Volume">Treble Volume -7 to +7</param>
-        /// <returns></returns>
-        public Task<FsResult<FsVoid>> setEQTreble(int Volume)
-        {
-            var args = CreateArgs("value", Volume.ToString());
-            return _communicator.GetResponse<FsVoid>(Command.CUSTOM_EQ_TREBLE, args, Verb.Set);
-        }
-
-        /// <summary>
-        /// get the first value for costum eq-settings (Bass)
-        /// </summary>
-        /// <returns></returns>
-        public Task<FsResult<short>> GetEQBass()
-        {
-            return _communicator.GetResponse<short>(Command.CUSTOM_EQ_BASS);
-        }
-
-        /// <summary>
-        /// set the first value for costum eq-settings (Bass)
-        /// </summary>
-        /// <param name="Volume">Bass  Volume -7 to +7</param>
-        /// <returns></returns>
-        public Task<FsResult<FsVoid>> setEQBass(int Volume)
-        {
-            var args = CreateArgs("value", Volume.ToString());
-            return _communicator.GetResponse<FsVoid>(Command.CUSTOM_EQ_BASS, args, Verb.Set);
-        }
-
-        /// <summary>
-        /// get whether or not loudness is activated This function is only available if costum eq is active
-        /// </summary>
-        /// <returns></returns>
-        public Task<FsResult<bool>> GetEQLoudness()
-        {
-            return _communicator.GetResponse<bool>(Command.CUSTOM_EQ_LOUDNESS);
-        }
-
-        /// <summary>
-        /// set whether or not loudness is activated This function is only available if costum eq is active
-        /// </summary>
-        /// <param name="on">true=on , false=off</param>
-        /// <returns></returns>
-        public Task<FsResult<FsVoid>> setEQLoudness(bool on)
+        public Task<FsResult<FsVoid>> setPowerStatus(bool on)
         {
             var args = CreateArgs("value", (on ? 1 : 0).ToString());
-            return _communicator.GetResponse<FsVoid>(Command.CUSTOM_EQ_LOUDNESS, args, Verb.Set);
-        }
-
-        /// <summary>
-        /// get whether or not device is muted
-        /// </summary>
-        /// <returns></returns>
-        public Task<FsResult<bool>> GetMute()
-        {
-            return _communicator.GetResponse<bool>(Command.MUTE);
-        }
-
-        /// <summary>
-        /// set whether or not device is muted
-        /// </summary>
-        /// <param name="on">true=Mute on , false=Mute off</param>
-        /// <returns></returns>
-        public Task<FsResult<FsVoid>> setMute(bool on)
-        {
-            var args = CreateArgs("value", (on ? 1 : 0).ToString());
-            return _communicator.GetResponse<FsVoid>(Command.MUTE, args, Verb.Set);
-        }
-
-
-        /// <summary>
-        /// get the highest available fm-frequency
-        /// </summary>
-        /// <returns></returns>
-        public Task<FsResult<int>> GetMaxFMFreq()
-        {
-            return _communicator.GetResponse<int>(Command.MAX_FM_FREQ);
-        }
-
-        /// <summary>
-        /// get the lowest available fm-frequency
-        /// </summary>
-        /// <returns></returns>
-        public Task<FsResult<int>> GetMinFMFreq()
-        {
-            return _communicator.GetResponse<int>(Command.MIN_FM_FREQ);
-        }
-
-        /// <summary>
-        /// get the Min Step for fm-frequency
-        /// </summary>
-        /// <returns></returns>
-        public Task<FsResult<int>> GetFMFreqStep()
-        {
-            return _communicator.GetResponse<int>(Command.STEP_FM_FREQ);
-        }
-
-        /// <summary>
-        /// get list of available EQ Bands (Bass+Treble) with Min/Max Values
-        /// </summary>
-        /// <param name="startItem">number of StartIndex</param>
-        /// <param name="maxItems">number Items to be loaded</param>
-        /// <returns></returns>
-        public Task<FsResult<IEnumerable<EQBandListItem>>> getEQBandsList(int startItem = -1, int maxItems = 2)
-        {
-            var args = CreateArgs("maxItems", maxItems.ToString(), "startItem", startItem.ToString());
-            return _communicator.GetResponse<IEnumerable<EQBandListItem>>(Command.CUSTOM_EQ_BANDS, args, Verb.ListGetNext);
+            return _communicator.GetResponse<FsVoid>(Command.POWER, args, Verb.Set);
         }
 
         /// <summary>
@@ -707,6 +588,112 @@ namespace FsApi
             return _communicator.GetResponse<string>(Command.TIME);
         }
 
+        #endregion
+
+        #region EQ
+        public Task<FsResult<IEnumerable<EqualizerPreset>>> GetEqualizerPresets()
+        {
+            return _communicator.GetResponse<IEnumerable<EqualizerPreset>>(Command.EQUALIZER_PRESETS, null, Verb.ListGetNext);
+        }
+
+
+        /// <summary>
+        /// get the number of the selected eq-presets
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<byte>> GetEQPreset()
+        {
+            return _communicator.GetResponse<byte>(Command.EQ_PRESET);
+        }
+
+        /// <summary>
+        /// set the number of the selected eq-presets
+        /// </summary>
+        /// <param name="presetNr">Number of the Preset (get it from presetList)</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setEQPreset(int presetNr)
+        {
+            var args = CreateArgs("value", presetNr.ToString());
+            return _communicator.GetResponse<FsVoid>(Command.EQ_PRESET, args, Verb.Set);
+        }
+
+        /// <summary>
+        /// get the second value for costum eq-settings (Treble)
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<short>> GetEQTreble()
+        {
+            return _communicator.GetResponse<short>(Command.CUSTOM_EQ_TREBLE);
+        }
+
+        /// <summary>
+        /// set the second value for costum eq-settings (Treble)
+        /// </summary>
+        /// <param name="Volume">Treble Volume -7 to +7</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setEQTreble(int Volume)
+        {
+            var args = CreateArgs("value", Volume.ToString());
+            return _communicator.GetResponse<FsVoid>(Command.CUSTOM_EQ_TREBLE, args, Verb.Set);
+        }
+
+        /// <summary>
+        /// get the first value for costum eq-settings (Bass)
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<short>> GetEQBass()
+        {
+            return _communicator.GetResponse<short>(Command.CUSTOM_EQ_BASS);
+        }
+
+        /// <summary>
+        /// set the first value for costum eq-settings (Bass)
+        /// </summary>
+        /// <param name="Volume">Bass  Volume -7 to +7</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setEQBass(int Volume)
+        {
+            var args = CreateArgs("value", Volume.ToString());
+            return _communicator.GetResponse<FsVoid>(Command.CUSTOM_EQ_BASS, args, Verb.Set);
+        }
+
+        /// <summary>
+        /// get whether or not loudness is activated This function is only available if costum eq is active
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<bool>> GetEQLoudness()
+        {
+            return _communicator.GetResponse<bool>(Command.CUSTOM_EQ_LOUDNESS);
+        }
+
+        /// <summary>
+        /// set whether or not loudness is activated This function is only available if costum eq is active
+        /// </summary>
+        /// <param name="on">true=on , false=off</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setEQLoudness(bool on)
+        {
+            var args = CreateArgs("value", (on ? 1 : 0).ToString());
+            return _communicator.GetResponse<FsVoid>(Command.CUSTOM_EQ_LOUDNESS, args, Verb.Set);
+        }
+
+
+        /// <summary>
+        /// get list of available EQ Bands (Bass+Treble) with Min/Max Values
+        /// </summary>
+        /// <param name="startItem">number of StartIndex</param>
+        /// <param name="maxItems">number Items to be loaded</param>
+        /// <returns></returns>
+        public Task<FsResult<IEnumerable<EQBandListItem>>> getEQBandsList(int startItem = -1, int maxItems = 2)
+        {
+            var args = CreateArgs("maxItems", maxItems.ToString(), "startItem", startItem.ToString());
+            return _communicator.GetResponse<IEnumerable<EQBandListItem>>(Command.CUSTOM_EQ_BANDS, args, Verb.ListGetNext);
+        }
+
+
+        #endregion  
+
+        #region Radio
         /// <summary>
         /// get DAB RadioDNS Name
         /// </summary>
@@ -731,7 +718,6 @@ namespace FsApi
 
         }
 
-
         /// <summary>
         /// get FM RadioDNS Name
         /// </summary>
@@ -744,7 +730,7 @@ namespace FsApi
 
                 var sid = (await _communicator.GetResponse<ushort>(Command.FM_RDSPI)).Value.ToString("X");
 
-                var freq = (await _communicator.GetResponse<int>(Command.PLAY_FREQU)).Value.ToString();
+                var freq = (await _communicator.GetResponse<uint>(Command.PLAY_FREQU)).Value.ToString();
                 return new FsResult<string>(freq + "." + sid + "." + sid[0] + ecc + ".fm.radiodns.org");
             }
             catch
@@ -754,6 +740,178 @@ namespace FsApi
 
         }
 
+        /// <summary>
+        /// set the current frequency for fm 
+        /// </summary>
+        /// <param name="Frequency">Frequency for Station (in herz) 96700 = 96,70 MHz</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setFrequency(long Frequency)
+        {
+            var args = CreateArgs("value", Frequency.ToString());
+            return _communicator.GetResponse<FsVoid>(Command.PLAY_FREQU, args, Verb.Set);
+        }
+
+        /// <summary>
+        /// get the current frequency for fm (in herz) 96700 = 96,70 MHz
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<uint>> getFrequency()
+        {
+            return _communicator.GetResponse<uint>(Command.PLAY_FREQU);
+        }
+        /// <summary>
+        /// get the highest available fm-frequency
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<int>> GetMaxFMFreq()
+        {
+            return _communicator.GetResponse<int>(Command.MAX_FM_FREQ);
+        }
+
+        /// <summary>
+        /// get the lowest available fm-frequency
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<int>> GetMinFMFreq()
+        {
+            return _communicator.GetResponse<int>(Command.MIN_FM_FREQ);
+        }
+
+        /// <summary>
+        /// get the Min Step for fm-frequency
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<int>> GetFMFreqStep()
+        {
+            return _communicator.GetResponse<int>(Command.STEP_FM_FREQ);
+        }
+
+        #endregion
+
+        #region Multiroom
+
+        /// <summary>
+        /// Get a list with all available Mutiroom Radios
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<IEnumerable<MutliRoomItem>>> GetMutliroomDeviceList()
+        {
+            return _communicator.GetResponse<IEnumerable<MutliRoomItem>>(Command.MULTI_LIST_ALL, null, Verb.ListGetNext);
+        }
+
+        /// <summary>
+        /// Create a new Mutiroom Group
+        /// </summary>
+        /// <param name="GroupName">Name of the Group</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setMutliroomCreateGroup(String GroupName)
+        {
+            var args = CreateArgs("value", GroupName);
+            return _communicator.GetResponse<FsVoid>(Command.MULTI_GROUP_CREATE, args, Verb.Set);
+        }
+
+        /// <summary>
+        /// Add a device to the current Mutiroom Group
+        /// </summary>
+        /// <param name="GroupName">ID of the Device</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setMutliroomAddDeviceToGroup(String DeviceID)
+        {
+            var args = CreateArgs("value", DeviceID);
+            return _communicator.GetResponse<FsVoid>(Command.MULTI_GROUP_ADD, args, Verb.Set);
+        }
+
+        /// <summary>
+        /// Delete the current Mutiroom Group
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setMutliroomDeleteGroup()
+        {
+            var args = CreateArgs("value", "1");
+            return _communicator.GetResponse<FsVoid>(Command.MULTI_GROUP_DEL, args, Verb.Set);
+        }
+
+
+        /// <summary>
+        /// get the Name of the Mutliroom Group
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<String>> getMutliroomGroupName()
+        {
+            return _communicator.GetResponse<String>(Command.MULTI_GROUP_NAME);
+        }
+
+
+        /// <summary>
+        /// get the ID of the Mutliroom Group
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<String>> getMutliroomGroupID()
+        {
+            return _communicator.GetResponse<String>(Command.MULTI_GROUP_ID);
+        }
+
+        /// <summary>
+        /// get the Device State in the Mutliroom Group
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<byte>> getMutliroomGroupState()
+        {
+            return _communicator.GetResponse<byte>(Command.MULTI_GROUP_STATE);
+        }
+
+        /// <summary>
+        /// Set the Device State in the Mutliroom Group
+        /// </summary>
+        /// <param name="State">0= NO, 2=Server 1=Client</param>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setMutliroomGroupState(int State)
+        {
+            var args = CreateArgs("value", State.ToString());
+            return _communicator.GetResponse<FsVoid>(Command.MULTI_GROUP_STATE, args, Verb.Set);
+        }
+
+        /// <summary>
+        /// get the Master Vol of the Mutliroom Group
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<byte>> getMutliroomGroupVolume()
+        {
+            return _communicator.GetResponse<byte>(Command.MULTI_GROUP_VOL);
+        }
+
+        /// <summary>
+        /// set  the Master Vol of the Mutliroom Group
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setMutliroomGroupVolume(int Volume)
+        {
+            var args = CreateArgs("value", Volume.ToString());
+            return _communicator.GetResponse<FsVoid>(Command.MULTI_GROUP_VOL, args, Verb.Set);
+        }
+
+
+        /// <summary>
+        /// get the Client Vol of the Mutliroom Group
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<byte>> getMutliroomClientVolume(int Client)
+        {
+            return _communicator.GetResponse<byte>(Command.MULTI_GROUP_VOL_CLIENT + Client);
+        }
+
+        /// <summary>
+        /// set  the Client Vol of the Mutliroom Group
+        /// </summary>
+        /// <returns></returns>
+        public Task<FsResult<FsVoid>> setMutliroomClientVolume(int Client, int Volume)
+        {
+            var args = CreateArgs("value", Volume.ToString());
+            return _communicator.GetResponse<FsVoid>(Command.MULTI_GROUP_VOL_CLIENT + Client, args, Verb.Set);
+        }
+
+
+        #endregion
 
 
         /// <summary>

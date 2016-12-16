@@ -70,5 +70,21 @@
         public const string DAB_SID = "netRemote.play.serviceIds.dabServiceId";
         public const string DAB_SCID = "netRemote.play.serviceIds.dabScids";
         public const string FM_RDSPI = "netRemote.play.serviceIds.fmRdsPi";
+
+        //Multiroom
+
+        public const string MULTI_LIST_ALL = "netRemote.multiroom.device.listAll";
+        public const string MULTI_GROUP_CREATE = "netRemote.multiroom.group.create";
+        public const string MULTI_GROUP_ADD = "netRemote.multiroom.group.addClient";
+        public const string MULTI_GROUP_DEL = "netRemote.multiroom.group.destroy";
+        public const string MULTI_GROUP_NAME = "netRemote.multiroom.group.name";
+        public const string MULTI_GROUP_ID = "netRemote.multiroom.group.id";
+        public const string MULTI_GROUP_STATE = "netRemote.multiroom.group.state";
+        public const string MULTI_GROUP_VOL = "netRemote.multiroom.group.masterVolume";
+        public const string MULTI_GROUP_VOL_CLIENT = "netRemote.multiroom.client.volume";
+        public const string MULTI_GROUP_MUTE_CLIENT = "netRemote.multiroom.client.mute";
+        public const string MULTI_DEVICE_CLIENT = "netRemote.multiroom.device.clientIndex";
+        public const string MULTI_DEVICE_SERVER_STATE = "netRemote.multiroom.device.serverStatus";
+
     }
 }
